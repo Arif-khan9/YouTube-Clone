@@ -1,22 +1,41 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import './PlayVideo.css';
-import video1 from '../../assets/video.mp4'
+// import video1 from '../../assets/video.mp4'
 import like from '../../assets/like.png'
 import dislike from '../../assets/dislike.png'
 import share from '../../assets/share.png'
 import save from '../../assets/save.png'
 import jack from '../../assets/jack.png'
 import user_profile from '../../assets/user_profile.jpg'
+import { API_KEY } from '../../data';
+import { useParams } from 'react-router-dom';
 
 
 
 
+const PlayVideo = ({VideoId}) => {
+    console.log(useParams())
 
-const PlayVideo = () => {
+   
+    const [apidata , setApidata] = useState(null);
+
+    const fetchVideoData = async () =>{
+        // Fetching Videos Data 
+        const VideoDetails_url = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id=${VideoId}&key=${API_KEY}`;
+        await fetch(VideoDetails_url).then(Response => Response.json()).then(data => setApidata(data.items[0]));
+    
+    }
+
+    useEffect(()=>{
+        fetchVideoData();
+                
+    },[VideoId])
+
   return (
     <div className='play-video'>
-        <video src={video1} controls autoPlay muted></video>
-        <h3>Best YouTube Channel To Learn Web Development</h3>
+        {/* <video src={video1} controls autoPlay muted></video> */}
+        <iframe  src={`https://www.youtube.com/embed/${VideoId}?autoplay=1`} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
+        <h3>{apidata?apidata.snippet.title: "Title Here"}</h3>
         <div className="play-video-info">
             <p>1520 Views &bull; 2 days ago</p>
             <div className='flex'>
