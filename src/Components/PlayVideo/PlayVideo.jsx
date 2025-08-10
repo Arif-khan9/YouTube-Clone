@@ -8,17 +8,12 @@ import save from '../../assets/save.png'
 import jack from '../../assets/jack.png'
 import user_profile from '../../assets/user_profile.jpg'
 import { API_KEY } from '../../data';
-import { useParams } from 'react-router-dom';
-
-
+// import { useParams } from 'react-router-dom';
 
 
 const PlayVideo = ({VideoId}) => {
-    console.log(useParams())
-
-   
+    // console.log(useParams())
     const [apidata , setApidata] = useState(null);
-
     const fetchVideoData = async () =>{
         // Fetching Videos Data 
         const VideoDetails_url = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id=${VideoId}&key=${API_KEY}`;

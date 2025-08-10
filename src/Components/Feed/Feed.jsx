@@ -10,12 +10,12 @@ import { Link } from 'react-router-dom'
 
 
 const Feed = ({category}) => {
+    // console.log(category)
 
     const [data , setData] = useState([])
 
     const fetchData = async () =>{
         const VideoList_url = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&chart=mostPopular&maxResults=50&regionCode=US&videoCategoryId=${category}&key=${API_KEY}`;
-
         await fetch(VideoList_url).then(res => res.json()).then(data=>setData(data.items))
     }
     useEffect(()=>{
@@ -25,9 +25,10 @@ const Feed = ({category}) => {
     <div className="feed">
         {data.map((item,index)=>{
             return(
-               <Link key={index} to={`/video/${item.snippet.category}/4521` } className='card'>
-                {console.log(item.snippet.category)}
+             <Link key={index} to={`/video/${item.snippet.categoryId}/${item.id}`} className='card'>
                 
+                {console.log("item",item)}
+
                <img src={item.snippet.thumbnails.medium.url} alt="" />
                <h2>{item.snippet.title}</h2>
                <h3>{item.snippet.channelTitle}</h3>

@@ -5,13 +5,14 @@ import Recommeneded from '../../Components/Recommeneded/Recommeneded'
 import { useParams } from 'react-router-dom'
 
 const Video = () => {
+  
 
-  const {VideoId,categoryId } = useParams();
+  const {videoId,category } = useParams();
 
   return (
     <div className='play-container'>
-      <PlayVideo VideoId={VideoId} />
-      <Recommeneded />
+      <PlayVideo VideoId={videoId} />
+      <Recommeneded  categoryId={category}/>
     </div>
   )
 }
