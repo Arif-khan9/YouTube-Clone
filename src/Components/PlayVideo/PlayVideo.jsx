@@ -5,15 +5,17 @@ import like from '../../assets/like.png'
 import dislike from '../../assets/dislike.png'
 import share from '../../assets/share.png'
 import save from '../../assets/save.png'
-import jack from '../../assets/jack.png'
+// import jack from '../../assets/jack.png'
 import user_profile from '../../assets/user_profile.jpg'
-import { API_KEY } from '../../data';
+import { API_KEY, value_converter } from '../../data';
+import moment from 'moment';
 // import { useParams } from 'react-router-dom';
 
 
 const PlayVideo = ({VideoId}) => {
     // console.log(useParams())
     const [apidata , setApidata] = useState(null);
+    const [channelData, setChannelData] = useState(null);
     const fetchVideoData = async () =>{
         // Fetching Videos Data 
         const VideoDetails_url = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id=${VideoId}&key=${API_KEY}`;
@@ -21,10 +23,21 @@ const PlayVideo = ({VideoId}) => {
     
     }
 
+    const fetchOtherData = async () =>{
+        // Fetching Channel Data
+
+        const ChannelData_url = `https://youtube.googleapis.com/youtube/v3/channels?part=snippet%2Cstatistics&id=${apidata.snippet.channelId}&key=${API_KEY}`
+        await fetch(ChannelData_url).then(res=>res.json()).then(data=>setChannelData(data.items[0]))
+    }
+
     useEffect(()=>{
         fetchVideoData();
                 
-    },[VideoId])
+    },[])
+
+    useEffect(()=>{
+        fetchOtherData();
+    },[apidata])
 
   return (
     <div className='play-video'>
@@ -32,28 +45,27 @@ const PlayVideo = ({VideoId}) => {
         <iframe  src={`https://www.youtube.com/embed/${VideoId}?autoplay=1`} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
         <h3>{apidata?apidata.snippet.title: "Title Here"}</h3>
         <div className="play-video-info">
-            <p>1520 Views &bull; 2 days ago</p>
+            <p>{apidata?value_converter(apidata.statistics.viewCount):"16k"} Views &bull; {apidata?moment(apidata.snippet.publishedAt).fromNow():""}</p>
             <div className='flex'>
-                <span><img src={like} alt="" />120</span>
-                 <span><img src={ dislike} alt="" />2</span>
+                <span><img src={like} alt="" />{apidata?value_converter(apidata.statistics.likeCount):155}</span>
+                 <span><img src={ dislike} alt="" /></span>
                   <span><img src={share} alt="" />Share</span>
                    <span><img src={save} alt="" />Save</span>
             </div>
         </div>
         <hr />
         <div className="publisher">
-            <img src={jack} alt="" />
+            <img src={channelData?channelData.snippet.thumbnails.default.url:""} alt="" />
             <div>
-                <p>GreatStack</p>
-                <span>1M Subscribers</span>
+                <p>{apidata?apidata.snippet.channelTitle:""}</p>
+                <span>{channelData?value_converter(channelData.statistics.subscriberCount):"1M"} Subscribers</span>
             </div>
             <button>Subscribe</button>
         </div>
         <div className="vid-description">
-            <p>Channel that makes learning Easy</p>
-            <p>Best channel to learn coding that help you to be a web developer</p>
+           <p>{apidata?apidata.snippet.description.slice(0,250):"Description Here"}</p>
             <hr />
-            <h4>130 Comments</h4>
+            <h4>{apidata?value_converter(apidata.statistics.commentCount):102} Comments</h4>
             <div className="comment">
                 <img src={user_profile} alt="" />
                 <div>
