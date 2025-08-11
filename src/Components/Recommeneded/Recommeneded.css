@@ -18,3 +18,9 @@
     font-weight: 600;
     margin-bottom: 5px;
 }
+@media (max-width: 900px) {
+    .recommeneded{
+        flex-basis: 100%;
+        
+    }
+}
